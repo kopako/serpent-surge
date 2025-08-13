@@ -2,25 +2,26 @@ services:
   db:
     image: mysql
     restart: always
-    env_file: ./.env
+    env_file: ../.env
     environment:
       - MYSQL_DATABASE=$DB_NAME
       - MYSQL_USER=$DB_USER
       - MYSQL_PASSWORD=$DB_PASSWORD
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     volumes:
-      - ./game/serpent-surge-main/db/init.sql:/docker-entrypoint-initdb.d/1.sql
+      - ../game/serpent-surge-main/db/init.sql:/docker-entrypoint-initdb.d/1.sql
     networks:
       - private
     ports:
       - 3306:3306
   backend:
     build:
-      dockerfile: backend.Dockerfile
+      dockerfile: ./docker/backend.Dockerfile
+      context: ../
       args:
       - NODE_ENV=production
     command: npm start
-    env_file: ./.env
+    env_file: ../.env
     environment:
       - NODE_ENV=production
       - DB_HOST=$DB_HOST
@@ -36,7 +37,8 @@ services:
     restart: on-failure
   frontend:
     build:
-      dockerfile: frontend.Dockerfile
+      dockerfile: ./docker/frontend.Dockerfile
+      context: ../
     ports:
       - 80:80
     networks:

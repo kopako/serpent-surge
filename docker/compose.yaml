@@ -36,11 +36,12 @@ services:
       - db
     restart: on-failure
   frontend:
-    build:
-      dockerfile: ./docker/frontend.Dockerfile
-      context: ../
+    image: nginx
     ports:
       - 80:80
+    volumes:
+      - ../game/serpent-surge-main/frontend:/usr/share/nginx/html/
+      - ../game/serpent-surge-main/nginx/game.conf:/etc/nginx/conf.d/default.conf
     networks:
       - public
       - private

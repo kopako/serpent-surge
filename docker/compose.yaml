@@ -36,17 +36,22 @@ services:
       - db
     restart: on-failure
   frontend:
-    image: nginx
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ../game/serpent-surge-main/frontend:/usr/share/nginx/html/
       - ../game/serpent-surge-main/nginx/game.conf:/etc/nginx/templates/default.conf.template
+      - nginx_secrets:/etc/letsencrypt
+      - ./user_conf.d:/etc/nginx/user_conf.d
     environment:
       - NGINX_HOST=$PUBLIC_DNS_NAME
-      - NGINX_PORT=80
+      - NGINX_PORT=443
       - BACKEND_HOST=backend
       - BACKEND_PORT=3000
+      - CERTBOT_EMAIL=$CERTBOT_EMAIL
     networks:
       - public
       - private
@@ -55,3 +60,5 @@ services:
 networks:
   public:
   private:
+volumes:
+  nginx_secrets:

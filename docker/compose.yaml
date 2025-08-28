@@ -2,7 +2,6 @@ services:
   db:
     image: mysql
     restart: always
-    # env_file: ../.env
     environment:
       - MYSQL_DATABASE=$DB_NAME
       - MYSQL_USER=$DB_USER
@@ -25,7 +24,6 @@ services:
       args:
       - NODE_ENV=production
     command: npm start
-    # env_file: ../.env
     environment:
       - NODE_ENV=production
       - DB_HOST=$DB_HOST

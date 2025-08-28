@@ -2,7 +2,6 @@ services:
   db:
     image: mysql
     restart: always
-    env_file: ../.env
     environment:
       - MYSQL_DATABASE=$DB_NAME
       - MYSQL_USER=$DB_USER
@@ -14,6 +13,10 @@ services:
       - private
     ports:
       - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   backend:
     build:
       dockerfile: ./docker/backend.Dockerfile
@@ -21,13 +24,12 @@ services:
       args:
       - NODE_ENV=production
     command: npm start
-    env_file: ../.env
     environment:
       - NODE_ENV=production
       - DB_HOST=$DB_HOST
+      - DB_NAME=$DB_NAME
       - DB_USER=$DB_USER
       - DB_PASSWORD=$DB_PASSWORD
-      - DB_NAME=$DB_NAME
     ports:
       - 3000:3000
     networks:
@@ -36,17 +38,22 @@ services:
       - db
     restart: on-failure
   frontend:
-    image: nginx
+    image: ${FRONTEND_IMAGE:-jonasal/nginx-certbot:latest}
+    restart: unless-stopped
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ../game/serpent-surge-main/frontend:/usr/share/nginx/html/
-      - ../game/serpent-surge-main/nginx/game.conf:/etc/nginx/templates/default.conf.template
+      - ${FRONTEND_CONF:-../game/serpent-surge-main/nginx/game-prod.conf}:/etc/nginx/templates/default.conf.template
+      - nginx_secrets:/etc/letsencrypt
+      - ./user_conf.d:/etc/nginx/user_conf.d
     environment:
       - NGINX_HOST=$PUBLIC_DNS_NAME
-      - NGINX_PORT=80
+      - NGINX_PORT=$FRONTEND_PORT
       - BACKEND_HOST=backend
       - BACKEND_PORT=3000
+      - CERTBOT_EMAIL=$CERTBOT_EMAIL
     networks:
       - public
       - private
@@ -55,3 +62,5 @@ services:
 networks:
   public:
   private:
+volumes:
+  nginx_secrets:

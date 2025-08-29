@@ -24,4 +24,4 @@ jobs:
       with:
         context: docker/backend.Dockerfile
         push: true
-        tags: kopako/gh-docker:latest
+        tags: kopako/serpentsurge-backend:latest

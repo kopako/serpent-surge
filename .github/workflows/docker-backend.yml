@@ -22,6 +22,6 @@ jobs:
     - name: Build AND Push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: docker/backend.Dockerfile
+        context: ./docker/backend.Dockerfile
         push: true
         tags: kopako/serpentsurge-backend:latest

@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "allow_mysql" {
 
 resource "aws_db_instance" "serpent-surge" {
   identifier             = "serpent-surge"
-  instance_class         = "db.t2.micro"
+  instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "mysql"
   engine_version         = "8.0"

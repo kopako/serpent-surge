@@ -10,7 +10,7 @@ resource "aws_security_group" "web_server" {
 
 resource "aws_security_group_rule" "allow_https" {
   type              = "ingress"
-  description       = "HTTPS ingress"
+  description       = "HTTPS"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "allow_https" {
 
 resource "aws_security_group_rule" "allow_http" {
   type              = "ingress"
-  description       = "allow all"
+  description       = "HTTP"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
@@ -30,9 +30,19 @@ resource "aws_security_group_rule" "allow_http" {
 
 resource "aws_security_group_rule" "allow_ssh" {
   type              = "ingress"
-  description       = "allow all"
+  description       = "SSH"
   from_port         = 22
   to_port           = 22
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web_server.id
+}
+
+resource "aws_security_group_rule" "allow_egress" {
+  type              = "egress"
+  description       = "egress"
+  from_port         = 0
+  to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.web_server.id

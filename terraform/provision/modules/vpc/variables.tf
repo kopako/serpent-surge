@@ -21,7 +21,7 @@ variable "availability_zone" {
 variable "subnet_name" {
   description = "The name of the subnet!"
   type        = string
-  default     = "terra-sub-pub-1"
+  default     = "sub-pub-1"
 }
 variable "igw_name" {
   description = "The name of the internet gateway"

@@ -1,30 +1,41 @@
-resource "aws_security_group" "main" {
-  egress = [
-    {
-      cidr_blocks      = ["0.0.0.0/0", ]
-      description      = ""
-      from_port        = 0
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      protocol         = "-1"
-      security_groups  = []
-      self             = false
-      to_port          = 0
-    }
-  ]
-  ingress = [
-    {
-      cidr_blocks      = ["0.0.0.0/0", ]
-      description      = ""
-      from_port        = 22
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      protocol         = "tcp"
-      security_groups  = []
-      self             = false
-      to_port          = 22
-    }
-  ]
+data "aws_vpc" "default" {
+  default = true
+}
+
+resource "aws_security_group" "web_server" {
+  name        = "serpent-surge-web-server-sg"
+  description = "Allow HTTPS to web server"
+  vpc_id      = data.aws_vpc.default.id
+}
+
+resource "aws_security_group_rule" "allow_https" {
+  type              = "ingress"
+  description       = "HTTPS ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web_server.id
+}
+
+resource "aws_security_group_rule" "allow_http" {
+  type              = "ingress"
+  description       = "allow all"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web_server.id
+}
+
+resource "aws_security_group_rule" "allow_ssh" {
+  type              = "ingress"
+  description       = "allow all"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web_server.id
 }
 
 data "aws_ami" "ubuntu" {
@@ -39,17 +50,14 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-
-  key_name = var.ssh_keypair
-
-  vpc_security_group_ids = [aws_security_group.main.id]
-#   subnet_id              = module.vpc.private_subnets[0]
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.ssh_keypair
+  vpc_security_group_ids = [aws_security_group.web_server.id]
+  #   subnet_id              = module.vpc.private_subnets[0]
 
   tags = {
-    Name      = var.instance_name
-    workspace = terraform.workspace
+    Name = var.instance_name
   }
 }
 

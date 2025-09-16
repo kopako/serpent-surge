@@ -16,7 +16,7 @@ variable "subnet_cidr" {
 variable "availability_zone" {
   description = "The availability zone of the VPC"
   type        = string
-  default     = "eu-north-1a"
+  default     = "eu-central-1a"
 }
 variable "subnet_name" {
   description = "The name of the subnet!"

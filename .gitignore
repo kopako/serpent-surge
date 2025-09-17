@@ -8,6 +8,20 @@ ENV/
 env.bak/
 venv.bak/
 
+# Local .terraform directories
+**/.terraform/*
+# Ignore variables files
+*.auto.tfvars
+# Ignore override files
+*.tfoverride
+# Ignore environment-specific files
+.envrc
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+**/.terraform.lock.hcl
+**/terraform.tfstate*
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db

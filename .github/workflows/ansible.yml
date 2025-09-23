@@ -5,6 +5,7 @@ on:
     workflows: ["Terraform"]
     types: [completed]
     branches: [main, ansible]
+  push:
 
 jobs:
   prepare_ansible:

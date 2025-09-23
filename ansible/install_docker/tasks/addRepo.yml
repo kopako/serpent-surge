@@ -1,0 +1,29 @@
+- name: Add Docker repo
+  get_url:
+    url: "{{ docker_repo }}"
+    dest: /etc/yum.repos.d/docer-ce.repo
+  when: ansible_os_family == "RedHat"
+
+- name: Enable Docker Edge & Test repo
+  ini_file:
+    dest: /etc/yum.repos.d/docer-ce.repo
+    section: "{{ item }}"
+    option: enabled
+    value: 0
+  with_items: ['docker-ce-test', 'docker-ce-edge']
+  when: ansible_os_family == "RedHat"
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+

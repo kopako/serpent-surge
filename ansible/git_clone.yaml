@@ -1,0 +1,12 @@
+---
+- name: Install docker on RHEL
+  hosts: web
+  tasks:
+  - name: clone gitrepo to ec2
+    ansible.builtin.git:
+      repo: 'https://github.com/kopako/serpent-surge.git'
+      dest: serpent-surge
+      version: ${{ github.ref }}
+    environment:
+      GIT_TERMINAL_PROMPT: false
+      GIT_SSL_NO_VERIFY: true

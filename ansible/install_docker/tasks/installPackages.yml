@@ -1,0 +1,20 @@
+- name: Install required packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+  when: ansible_os_family == "RedHat"
+
+- name: Install required packages
+  apt:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  

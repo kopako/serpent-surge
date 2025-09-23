@@ -1,0 +1,18 @@
+- name:
+  hosts: web
+  tasks:
+  - name: Run docker compose with env var
+    community.docker.docker_compose_v2:
+      project_src: $HOME/serpent-surge
+      build: true
+      files: docker/compose.yaml
+      project_src: ~/serpent-surge
+      state: present
+      restarted: true
+      environment:
+        DB_HOST: "${{ steps.read_rdp_ip.outputs.rdp_ip }}"       
+        DB_PASSWORD: "${{ secrets.DB_PASSWORD }} \"
+        DB_USER: "node_user"
+        DB_NAME: "serpent_surge_db"
+        PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
+        CERTBOT_EMAIL: "kopandima@gmail.com"

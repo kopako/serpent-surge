@@ -6,8 +6,6 @@ on:
     workflows: ["Terraform"]
     types:
       - completed
-  push:
-    branches: ["main", "ansible"]
 
 jobs:
   prepare_ansible:

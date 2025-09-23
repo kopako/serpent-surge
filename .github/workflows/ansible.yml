@@ -1,0 +1,59 @@
+name: Ansible
+
+on:
+  workflow_run:
+    workflows: ["Terraform"]
+    types: [completed]
+
+jobs:
+  prepare_ansible:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo to github runer 
+      uses: actions/checkout@v4
+    - name: Get BD IP from Terraform
+      uses: actions/download-artifact@v4
+      with:
+        name: BD_IP
+    - name: Get EC2 IP from Terraform
+      uses: actions/download-artifact@v4
+      with:
+        name: EC2_IP
+    - name: Read RDP_IP
+      id: read_rdp_ip
+      run: |
+        rdp_ip=$(cat rdp_ip.txt)
+        echo "rdp_ip=$rdp_ip" >> $GITHUB_OUTPUT
+    - name: Configure Ansible
+      run: |
+        sudo apt update
+        sudo pipx inject ansible-core jmespath
+        ansible-playbook --version
+        echo "[web]" >> ansible_hosts
+        cat $HOME/ec2_ip.txt >> ansible_hosts
+        mv ansible_hosts $HOME/serpent-surge/ansible/
+        cat $HOME/serpent-surge/ansible/ansible_hosts
+  ansible:
+    runs-on: ubuntu-latest
+    needs: prepare_ansible
+    steps:
+    - name: Ansible install docker
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: docker-install.yml
+        directory: $HOME/serpent-surge/ansible/
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        options: |
+          --inventory ansible_hosts
+          --verbose
+    - name: Ansible Docker compose up
+      run: |
+        DB_HOST=${{ steps.read_rdp_ip.outputs.rdp_ip }} \
+        DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+        DB_USER=node_user \
+        DB_NAME=serpent_surge_db \
+        PUBLIC_DNS_NAME=kopakoserpent.ddns.net \
+        CERTBOT_EMAIL=kopandima@gmail.com \
+        docker compose up --detach frontend backend
+      working-directory: $HOME/serpent-surge/docker
+

@@ -7,7 +7,7 @@ on:
     types:
       - completed
   push:
-    branches: ["main"]
+    branches: ["main", "ansible"]
 
 jobs:
   prepare_ansible:

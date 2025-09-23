@@ -2,6 +2,9 @@ name: Ansible
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main, terraform, ansible ]
+
   workflow_run:
     workflows: ["Terraform"]
     types:

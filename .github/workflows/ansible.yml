@@ -4,8 +4,7 @@ on:
   workflow_run:
     workflows: ["Terraform"]
     types: [completed]
-    branches: [main,ansible]
-  workflow_dispatch:
+    branches: [main, ansible]
 
 jobs:
   prepare_ansible:

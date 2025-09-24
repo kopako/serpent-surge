@@ -45,6 +45,7 @@ jobs:
       # run: ansible-playbook docker_install.yaml -i ansible_hosts -u ubuntu 
       uses: dawidd6/action-ansible-playbook@v4
       with:
+        directory: ansible/
         playbook: git_clone.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
@@ -58,6 +59,7 @@ jobs:
       # run: ansible-playbook docker_install.yaml -i ansible_hosts -u ubuntu 
       uses: dawidd6/action-ansible-playbook@v4
       with:
+        directory: ansible/
         playbook: docker_install.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
@@ -70,6 +72,7 @@ jobs:
     - name: Ansible Docker compose up
       uses: dawidd6/action-ansible-playbook@v4
       with:
+        directory: ansible/
         playbook: docker_compose_up.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |

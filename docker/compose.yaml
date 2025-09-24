@@ -1,5 +1,7 @@
 services:
   db:
+    profiles:
+      - dev
     image: mysql
     restart: always
     environment:

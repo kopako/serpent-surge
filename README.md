@@ -2,7 +2,7 @@
 [![Ansible](https://github.com/kopako/serpent-surge/actions/workflows/ansible.yml/badge.svg)](https://github.com/kopako/serpent-surge/actions/workflows/ansible.yml)
 # Quick start
 Create your own `.env` file based on `.env.example`  
-To run locally ```docker compose -f docker/compose.yaml --env-file dev.env up```  
+To run locally ```docker compose --profile dev -f docker/compose.yaml --env-file dev.env up```  
 To run on production create your own `.env` file, and run:  
 ```docker compose -f docker/compose.yaml --env-file .env up```
 

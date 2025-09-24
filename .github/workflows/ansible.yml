@@ -49,10 +49,6 @@ jobs:
         echo $EC2_ENDPOINT >> ansible_hosts
         mv ansible_hosts $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
         cat $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
-  ansible:
-    runs-on: ubuntu-latest
-    needs: prepare_ansible
-    steps:
     - name: Ansible install docker
       uses: dawidd6/action-ansible-playbook@v2
       with:

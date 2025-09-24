@@ -1,12 +1,18 @@
 ---
-- name: Install docker on RHEL
-  hosts: awshosts
+- name: Cloning serpent-surge repo
+  hosts: local
   tasks:
-  - name: clone gitrepo to ec2
+  - name: Install git
+    package:
+      name: git
+      state: latest
+    when: ansible_os_family == "RedHat"
+    become: true
+  - name: Clone gitrepo to ec2
     ansible.builtin.git:
       repo: 'https://github.com/kopako/serpent-surge.git'
       dest: serpent-surge
-      version: ${{ github.ref }}
+      # version: ${{ github.ref }}
     environment:
       GIT_TERMINAL_PROMPT: false
       GIT_SSL_NO_VERIFY: true

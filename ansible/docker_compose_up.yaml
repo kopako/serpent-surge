@@ -1,18 +1,18 @@
-- name:
-  hosts: awshosts
+- name: Docker compose up
+  hosts: local
+  become: true
   tasks:
   - name: Run docker compose with env var
     community.docker.docker_compose_v2:
-      project_src: $HOME/serpent-surge
-      build: true
+      project_src: serpent-surge
+      build: always
       files: docker/compose.yaml
-      project_src: ~/serpent-surge
       state: present
-      restarted: true
-      environment:
-        DB_HOST: "$RDP_ENDPOINT"       
-        DB_PASSWORD: "${{ DB_PASSWORD }} \"
-        DB_USER: "node_user"
-        DB_NAME: "serpent_surge_db"
-        PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
-        CERTBOT_EMAIL: "kopandima@gmail.com"
+      # restarted: true
+      # environment:
+      #   DB_HOST: "$RDP_ENDPOINT"       
+      #   DB_PASSWORD: "${{ DB_PASSWORD }} \"
+      #   DB_USER: "node_user"
+      #   DB_NAME: "serpent_surge_db"
+      #   PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
+      #   CERTBOT_EMAIL: "kopandima@gmail.com"

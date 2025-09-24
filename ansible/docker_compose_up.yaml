@@ -4,9 +4,9 @@
   tasks:
   - name: Run docker compose with env var
     community.docker.docker_compose_v2:
-      project_src: serpent-surge
+      project_src: serpent-surge/docker
       build: always
-      files: docker/compose.yaml
+      # files: docker/compose.yaml
       services:
         - frontend
         - backend

@@ -6,7 +6,7 @@
     community.docker.docker_compose_v2:
       project_src: serpent-surge
       build: always
-      files: docker/compose.yaml
+      files: serpent-surge/docker/compose.yaml
       services:
         - frontend
         - backend

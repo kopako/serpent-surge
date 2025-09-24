@@ -26,10 +26,13 @@ jobs:
       run: aws s3 cp s3://serpent-surge-s3/network/terraform.tfstate ./
     
     - name: Extract ec2_endpoint value
-      run: echo "EC2_ENDPOINT=$(jq -e ".outputs.ec2_endpoint.value" terraform.json)" >> $GITHUB_ENV
+      run: echo "EC2_ENDPOINT=$(jq -e ".outputs.ec2_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
     
     - name: Extract rdp_endpoint value
-      run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rdp_endpoint.value" terraform.json)" >> $GITHUB_ENV
+      run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rdp_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
+
+    - name: Check dir
+      run: tree
 
     - name: Configure Ansible
       run: |

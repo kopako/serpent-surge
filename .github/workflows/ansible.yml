@@ -54,6 +54,21 @@ jobs:
         options: |
           --verbose
           --user ubuntu
+    
+    - name: Install docker
+      # run: ansible-playbook docker_install.yaml -i ansible_hosts -u ubuntu 
+      uses: dawidd6/action-ansible-playbook@v4
+      with:
+        playbook: docker_install.yaml
+        directory: ansible/
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        inventory: |
+          [awshosts]
+          ${{env.EC2_ENDPOINT}}
+        options: |
+          --verbose
+          --user ubuntu
+
     - name: Ansible Docker compose up
       uses: dawidd6/action-ansible-playbook@v4
       with:

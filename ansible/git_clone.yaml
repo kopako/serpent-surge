@@ -6,7 +6,6 @@
     package:
       name: git
       state: latest
-    when: ansible_os_family == "RedHat"
     become: true
   - name: Clone gitrepo to ec2
     ansible.builtin.git:

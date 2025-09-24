@@ -7,12 +7,15 @@
       project_src: serpent-surge
       build: always
       files: docker/compose.yaml
+      services:
+        - frontend
+        - backend
       state: present
       # restarted: true
-      # environment:
-      #   DB_HOST: "$RDP_ENDPOINT"       
-      #   DB_PASSWORD: "${{ DB_PASSWORD }} \"
-      #   DB_USER: "node_user"
-      #   DB_NAME: "serpent_surge_db"
-      #   PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
-      #   CERTBOT_EMAIL: "kopandima@gmail.com"
+    environment:
+      DB_HOST: "$RDP_ENDPOINT"
+      DB_PASSWORD: "$DB_PASSWORD"
+      DB_USER: "node_user"
+      DB_NAME: "serpent_surge_db"
+      PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
+      CERTBOT_EMAIL: "kopandima@gmail.com"

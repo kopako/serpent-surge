@@ -46,7 +46,6 @@ jobs:
       uses: dawidd6/action-ansible-playbook@v4
       with:
         playbook: git_clone.yaml
-        directory: ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
           [awshosts]
@@ -60,7 +59,6 @@ jobs:
       uses: dawidd6/action-ansible-playbook@v4
       with:
         playbook: docker_install.yaml
-        directory: ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
           [awshosts]
@@ -73,7 +71,6 @@ jobs:
       uses: dawidd6/action-ansible-playbook@v4
       with:
         playbook: docker_compose_up.yaml
-        directory: ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
           [awshosts]
@@ -81,11 +78,11 @@ jobs:
         options: |
           --user ubuntu
           --verbose
-        env:
-          DB_HOST=$RDP_ENDPOINT
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          DB_USER=node_user
-          DB_NAME=serpent_surge_db
-          PUBLIC_DNS_NAME=kopakoserpent.ddns.net
-          CERTBOT_EMAIL=kopandima@gmail.com
+      env:
+        DB_HOST: ${{env.RDP_ENDPOINT}}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_USER: node_user
+        DB_NAME: serpent_surge_db
+        PUBLIC_DNS_NAME: kopakoserpent.ddns.net
+        CERTBOT_EMAIL: kopandima@gmail.com
 

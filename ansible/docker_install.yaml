@@ -1,6 +1,6 @@
 ---
 - name: Install docker on RHEL
-  hosts: web
+  hosts: awshosts
   become: yes
   roles:
     - install_docker

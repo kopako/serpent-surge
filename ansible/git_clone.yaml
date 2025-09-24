@@ -1,6 +1,6 @@
 ---
 - name: Install docker on RHEL
-  hosts: web
+  hosts: awshosts
   tasks:
   - name: clone gitrepo to ec2
     ansible.builtin.git:

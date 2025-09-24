@@ -45,27 +45,38 @@ jobs:
         sudo apt update
         sudo pipx inject ansible-core jmespath
         ansible-playbook --version
-        echo "[web]" >> ansible_hosts
+        echo "[awshosts]" >> ansible_hosts
         echo $EC2_ENDPOINT >> ansible_hosts
         mv ansible_hosts $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
         cat $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
     - name: Ansible install docker
-      uses: dawidd6/action-ansible-playbook@v2
+      uses: dawidd6/action-ansible-playbook@v4
       with:
         playbook: docker-install.yml
-        directory: $HOME/work/serpent-surge/serpent-surge/ansible/
+        directory: ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
+        inventory: |
+          [awshosts]
+          $EC2_ENDPOINT
         options: |
-          --inventory ansible_hosts
           --verbose
     - name: Ansible Docker compose up
-      run: |
-        DB_HOST=$RDP_ENDPOINT \
-        DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-        DB_USER=node_user \
-        DB_NAME=serpent_surge_db \
-        PUBLIC_DNS_NAME=kopakoserpent.ddns.net \
-        CERTBOT_EMAIL=kopandima@gmail.com \
-        docker compose up --detach frontend backend
-      working-directory: $HOME/work/serpent-surge/serpent-surge/docker
+      uses: dawidd6/action-ansible-playbook@v4
+      with:
+        playbook: docker_compose_up.yaml
+        directory: ansible/
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        inventory: |
+          [awshosts]
+          $EC2_ENDPOINT
+        options: |
+          --verbose
+        env:
+          DB_HOST=$RDP_ENDPOINT \
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          DB_USER=node_user \
+          DB_NAME=serpent_surge_db \
+          PUBLIC_DNS_NAME=kopakoserpent.ddns.net \
+          CERTBOT_EMAIL=kopandima@gmail.com \
+          docker compose up --detach frontend backend
 

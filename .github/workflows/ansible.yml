@@ -31,6 +31,12 @@ jobs:
     - name: Extract rdp_endpoint value
       run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rdp_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
 
+    - name: Check home
+      run: echo $HOME
+
+    - name: Check current dir
+      run: echo $PWD
+
     - name: Check dir
       run: tree
 

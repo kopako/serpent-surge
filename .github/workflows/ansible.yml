@@ -11,26 +11,23 @@ jobs:
     steps:
     - name: Checkout repo to github runer 
       uses: actions/checkout@v4
-    - name: Get BD IP from Terraform
-      uses: actions/download-artifact@v4
-      with:
-        name: BD_IP
-    - name: Get EC2 IP from Terraform
-      uses: actions/download-artifact@v4
-      with:
-        name: EC2_IP
-    - name: Read RDP_IP
-      id: read_rdp_ip
-      run: |
-        rdp_ip=$(cat rdp_ip.txt)
-        echo "rdp_ip=$rdp_ip" >> $GITHUB_OUTPUT
+    
+    - name: Download terraform state file
+      run: aws s3 cp s3://serpent-surge-s3/network/terraform.tfstate ./
+    
+    - name: Extract ec2_endpoint value
+      run: echo "EC2_ENDPOINT=$(jq -e ".outputs.ec2_endpoint.value" terraform.json)" >> $GITHUB_ENV
+    
+    - name: Extract rdp_endpoint value
+      run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rdp_endpoint.value" terraform.json)" >> $GITHUB_ENV
+
     - name: Configure Ansible
       run: |
         sudo apt update
         sudo pipx inject ansible-core jmespath
         ansible-playbook --version
         echo "[web]" >> ansible_hosts
-        cat $HOME/ec2_ip.txt >> ansible_hosts
+        echo $EC2_ENDPOINT >> ansible_hosts
         mv ansible_hosts $HOME/serpent-surge/ansible/
         cat $HOME/serpent-surge/ansible/ansible_hosts
   ansible:
@@ -48,7 +45,7 @@ jobs:
           --verbose
     - name: Ansible Docker compose up
       run: |
-        DB_HOST=${{ steps.read_rdp_ip.outputs.rdp_ip }} \
+        DB_HOST=$RDP_ENDPOINT \
         DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
         DB_USER=node_user \
         DB_NAME=serpent_surge_db \

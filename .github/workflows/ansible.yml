@@ -47,8 +47,8 @@ jobs:
         ansible-playbook --version
         echo "[web]" >> ansible_hosts
         echo $EC2_ENDPOINT >> ansible_hosts
-        mv ansible_hosts $HOME/ansible/ansible_hosts
-        cat $HOME/ansible/ansible_hosts
+        mv ansible_hosts $HOME/serpent-surge/serpent-surge/ansible/ansible_hosts
+        cat $HOME/serpent-surge/serpent-surge/ansible/ansible_hosts
   ansible:
     runs-on: ubuntu-latest
     needs: prepare_ansible
@@ -57,7 +57,7 @@ jobs:
       uses: dawidd6/action-ansible-playbook@v2
       with:
         playbook: docker-install.yml
-        directory: $HOME/ansible/
+        directory: $HOME/serpent-surge/serpent-surge/ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
         options: |
           --inventory ansible_hosts
@@ -71,5 +71,5 @@ jobs:
         PUBLIC_DNS_NAME=kopakoserpent.ddns.net \
         CERTBOT_EMAIL=kopandima@gmail.com \
         docker compose up --detach frontend backend
-      working-directory: $HOME/docker
+      working-directory: $HOME/serpent-surge/serpent-surge/docker
 

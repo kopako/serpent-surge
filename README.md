@@ -1,3 +1,4 @@
+[![Terraform](https://github.com/kopako/serpent-surge/actions/workflows/terraform.yaml/badge.svg)](https://github.com/kopako/serpent-surge/actions/workflows/terraform.yaml)
 [![Ansible](https://github.com/kopako/serpent-surge/actions/workflows/ansible.yml/badge.svg)](https://github.com/kopako/serpent-surge/actions/workflows/ansible.yml)
 # Quick start
 Create your own `.env` file based on `.env.example`  

@@ -52,12 +52,12 @@ jobs:
     - name: Ansible install docker
       uses: dawidd6/action-ansible-playbook@v4
       with:
-        playbook: docker-install.yaml
+        playbook: docker_install.yaml
         directory: ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
           [awshosts]
-          ${{ env.EC2_ENDPOINT }}
+          ${{env.EC2_ENDPOINT}}
         options: |
           --verbose
     - name: Ansible Docker compose up

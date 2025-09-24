@@ -28,8 +28,8 @@ jobs:
     - name: Extract ec2_endpoint value
       run: echo "EC2_ENDPOINT=$(jq -e ".outputs.ec2_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
     
-    - name: Extract rdp_endpoint value
-      run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rdp_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
+    - name: Extract rds_endpoint value
+      run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rds_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
 
     - name: Check home
       run: echo $HOME
@@ -57,7 +57,7 @@ jobs:
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |
           [awshosts]
-          $EC2_ENDPOINT
+          ${{ env.EC2_ENDPOINT }}
         options: |
           --verbose
     - name: Ansible Docker compose up

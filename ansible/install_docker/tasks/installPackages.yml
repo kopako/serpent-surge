@@ -11,9 +11,8 @@
 - name: Install required packages
   apt:
     name:
-      - yum-utils
-      - device-mapper-persistent-data
-      - lvm2
+      - ca-certificates
+      - curl
     state: present
     update_cache: yes
   when: ansible_os_family == "Debian"

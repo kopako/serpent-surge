@@ -1,6 +1,6 @@
 ---
 - name: Cloning serpent-surge repo
-  hosts: local
+  hosts: all
   tasks:
   - name: Install git
     package:

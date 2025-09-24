@@ -31,15 +31,6 @@ jobs:
     - name: Extract rds_endpoint value
       run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rds_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
 
-    - name: Check home
-      run: echo $HOME
-
-    - name: Check current dir
-      run: echo $PWD
-
-    - name: Check dir
-      run: tree
-
     - name: Configure Ansible
       run: |
         sudo apt update
@@ -50,11 +41,11 @@ jobs:
         mv ansible_hosts $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
         cat $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
 
-    - name: Ansible install docker
+    - name: Clone repo to remote server
       # run: ansible-playbook docker_install.yaml -i ansible_hosts -u ubuntu 
       uses: dawidd6/action-ansible-playbook@v4
       with:
-        playbook: docker_install.yaml
+        playbook: git_clone.yaml
         directory: ansible/
         key: ${{secrets.SSH_PRIVATE_KEY}}
         inventory: |

@@ -41,7 +41,7 @@ jobs:
         ansible-playbook --version
         echo "[web]" >> ansible_hosts
         echo $EC2_ENDPOINT >> ansible_hosts
-        mv ansible_hosts $HOME/ansible/
+        mv ansible_hosts $HOME/ansible/ansible_hosts
         cat $HOME/ansible/ansible_hosts
   ansible:
     runs-on: ubuntu-latest

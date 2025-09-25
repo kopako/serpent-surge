@@ -29,7 +29,7 @@ jobs:
       run: echo "EC2_ENDPOINT=$(jq -e ".outputs.ec2_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
     
     - name: Extract rds_endpoint value
-      run: echo "RDP_ENDPOINT=$(jq -e ".outputs.rds_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
+      run: echo "RDS_ENDPOINT=$(jq -e ".outputs.rds_endpoint.value" terraform.tfstate)" >> $GITHUB_ENV
 
     - name: Configure Ansible
       run: |
@@ -69,6 +69,34 @@ jobs:
           --verbose
           --user ubuntu
 
+    - name: Prepare env file
+      run: |
+        cat << EOF > .env
+        DB_HOST: ${{env.RDS_ENDPOINT}}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_USER: "node_user"
+        DB_NAME: "serpent_surge_db"
+        PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
+        CERTBOT_EMAIL: "kopandima@gmail.com"
+        FRONTEND_PORT: "443"
+        FRONTEND_IMAGE: "jonasal/nginx-certbot:latest"
+        FRONTEND_CONF: "../game/serpent-surge-main/nginx/game-prod.conf"
+        EOF
+      working-directory: ansible/
+
+    - name: Ansible copy file to remote
+      uses: dawidd6/action-ansible-playbook@v4
+      with:
+        directory: ansible/
+        playbook: copy_env.yaml
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        inventory: |
+          [awshosts]
+          ${{env.EC2_ENDPOINT}}
+        options: |
+          --user ubuntu
+          --verbose
+
     - name: Ansible Docker compose up
       uses: dawidd6/action-ansible-playbook@v4
       with:
@@ -81,11 +109,4 @@ jobs:
         options: |
           --user ubuntu
           --verbose
-      env:
-        DB_HOST: ${{env.RDP_ENDPOINT}}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_USER: node_user
-        DB_NAME: serpent_surge_db
-        PUBLIC_DNS_NAME: kopakoserpent.ddns.net
-        CERTBOT_EMAIL: kopandima@gmail.com
 

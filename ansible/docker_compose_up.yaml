@@ -6,19 +6,9 @@
     community.docker.docker_compose_v2:
       project_src: serpent-surge/docker
       build: always
-      # files: docker/compose.yaml
       services:
         - frontend
         - backend
       state: present
-      # restarted: true
-    # environment:
-    #   DB_HOST: "db_host_PLACEHOLDER"
-    #   DB_PASSWORD: "password_PLACEHOLDER"
-    #   DB_USER: "node_user"
-    #   DB_NAME: "serpent_surge_db"
-    #   PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
-    #   CERTBOT_EMAIL: "kopandima@gmail.com"
-    #   FRONTEND_PORT: "443"
-    #   FRONTEND_IMAGE: "jonasal/nginx-certbot:latest"
-    #   FRONTEND_CONF: "../game/serpent-surge-main/nginx/game-prod.conf"
+      env_files:
+        - .env

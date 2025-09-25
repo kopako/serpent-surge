@@ -1,0 +1,9 @@
+---
+- name: Copy ENV file to remote
+  hosts: all
+  tasks:
+  - name: Copy
+    ansible.builtin.copy:
+      src: .env
+      dest: serpent-surge/docker/.env
+      mode: '0400'

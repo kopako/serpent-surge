@@ -36,8 +36,6 @@ services:
       - 3000:3000
     networks:
       - private
-    depends_on:
-      - db
     restart: on-failure
   frontend:
     image: ${FRONTEND_IMAGE:-jonasal/nginx-certbot:latest}

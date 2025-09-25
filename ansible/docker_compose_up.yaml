@@ -13,8 +13,8 @@
       state: present
       # restarted: true
     environment:
-      DB_HOST: "$RDP_ENDPOINT"
-      DB_PASSWORD: "$DB_PASSWORD"
+      DB_HOST: ${{env.RDP_ENDPOINT}}
+      DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       DB_USER: "node_user"
       DB_NAME: "serpent_surge_db"
       PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"

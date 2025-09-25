@@ -30,7 +30,26 @@ db.connect((err) => {
         process.exit(1);
     }
     console.log('Connected to MySQL');
+    
+    const createTableQuery = `
+        CREATE TABLE IF NOT EXISTS scores (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            difficulty INT NOT NULL,
+            score INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    `;
+
+    db.query(createTableQuery, (err) => {
+        if (err) {
+            console.error('Error creating scores table:', err.message);
+            process.exit(1);
+        }
+        console.log('Scores table is ready.');
+    });
 });
+    
 
 app.use(express.json());
 

@@ -6,7 +6,7 @@ on:
     types: [completed]
 
 jobs:
-  prepare_ansible:
+  ansible:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: eu-central-1

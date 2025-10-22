@@ -35,8 +35,3 @@ resource "aws_db_instance" "serpent_surge" {
   backup_window           = "03:00-04:00"
 }
 
-resource "aws_db_snapshot" "serpent_surge_snapshot" {
-  db_instance_identifier = aws_db_instance.serpent_surge.id
-  db_snapshot_identifier = "serpent-surge-${formatdate("YYYY-MM-DD-hh-mm", timestamp())}"
-}
-

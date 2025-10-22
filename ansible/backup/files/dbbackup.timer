@@ -1,0 +1,10 @@
+[Unit]
+Description=Run dbbackup daily
+
+[Timer]
+OnCalendar=*-*-* 2:00:00
+Persistent=true
+Unit=dbbackup.service
+
+[Install]
+WantedBy=timers.target

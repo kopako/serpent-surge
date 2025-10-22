@@ -1,0 +1,77 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for backup
+- name: Ensure group "dbbackup" exists
+  group:
+    name: dbbackup
+    state: present
+
+- name: Create user
+  user:
+    name: dbbackup
+    group: dbbackup
+    comment: Scheduled DB backup service
+    create_home: no
+    shell: /usr/sbin/nologin
+    system: yes
+    state: present
+
+- name: Create dir structure
+  file:
+    path: "{{ item }}"
+    owner: dbbackup
+    group: dbbackup
+    state: directory
+  loop:
+    - /opt/dbbackup
+    - /var/log/dbbackup
+
+- name: Move dbbackup.sh
+  copy:
+    src: "{{ item }}"
+    dest: /opt/dbbackup/
+    owner: dbbackup
+    group: dbbackup
+    mode: u+rwx,g+x,o+x
+  loop:
+    - dbbackup.sh
+    - archive_dumps.sh
+    - serpent-surge-backup.sh
+
+
+- name: Create a symbolic link
+  file:
+    src: "/opt/dbbackup/{{ item }}.sh"
+    dest: "/usr/local/bin//{{ item }}"
+    state: link
+  loop:
+    - dbbackup
+    - archive_dumps
+    - serpent-surge-backup
+
+- name: Move dbbackup.service
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    mode: u+rwx,g+x,o+x
+  loop:
+    - dbbackup.service
+    - dbbackup.timer
+    - dbbackup-archive.service
+    - dbbackup-archive.timer
+
+- name: Create my.cnf for dbbackup service
+  template:
+    src: my.cnf.j2
+    dest: /opt/dbbackup/my.cnf
+    owner: dbbackup
+    group: dbbackup
+    mode: 400
+
+- name: Start services
+  shell: |
+    systemctl daemon-reexec
+    systemctl daemon-reload
+    systemctl enable --now dbbackup.timer
+    systemctl enable --now dbbackup-archive.timer
+    systemctl restart dbbackup.service dbbackup-archive.service dbbackup.timer dbbackup-archive.timer

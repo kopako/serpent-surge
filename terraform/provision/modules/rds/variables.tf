@@ -1,7 +1,7 @@
 variable "db_password" {
   description = "RDS user password"
   sensitive   = true
-  ephemeral = true
+  ephemeral   = true
 }
 
 variable "db_user" {

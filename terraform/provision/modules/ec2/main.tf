@@ -1,9 +1,23 @@
+resource "aws_instance" "serpent_surge_app_server" {
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.ssh_keypair
+  vpc_security_group_ids = [aws_security_group.web_server.id]
+  iam_instance_profile = aws_iam_instance_profile.this.name
+
+  tags = {
+    Name = var.instance_name
+  }
+
+  user_data = templatefile("./modules/ec2/user_data.tfpl", { file_system_path = var.file_system_path, mount_target_bucket_name = var.mount_target_bucket_name })
+}
+
 data "aws_vpc" "default" {
   default = true
 }
 
 resource "aws_security_group" "web_server" {
-  name        = "serpent-surge-web-server-sg"
+  name        = "serpent_surge_web_server_sg"
   description = "Allow HTTPS to web server"
   vpc_id      = data.aws_vpc.default.id
 }
@@ -48,26 +62,32 @@ resource "aws_security_group_rule" "allow_egress" {
   security_group_id = aws_security_group.web_server.id
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
+resource "aws_iam_role" "ec2_role" {
+  name = "${var.instance_name}_ec2_role"
 
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
-resource "aws_instance" "app_server" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type
-  key_name               = var.ssh_keypair
-  vpc_security_group_ids = [aws_security_group.web_server.id]
-  #   subnet_id              = module.vpc.private_subnets[0]
+  assume_role_policy = data.aws_iam_policy_document.ec2_role.json
 
   tags = {
     Name = var.instance_name
   }
 }
 
+resource "aws_iam_policy" "s3_access_policy" {
+  name = "EC2S3AccessPolicy"
+
+  policy = data.aws_iam_policy_document.s3_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "s3_policy_attachment" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.s3_access_policy.arn
+}
+
+resource "aws_iam_instance_profile" "this" {
+  name = "${var.instance_name}_ec2_role"
+  role = aws_iam_role.ec2_role.name
+
+  tags = {
+    Name = var.instance_name
+  }
+}

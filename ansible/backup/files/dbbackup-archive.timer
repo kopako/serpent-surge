@@ -1,0 +1,12 @@
+[Unit]
+Description=Run archive process every 3 days
+
+[Timer]
+OnBootSec=15min
+OnActiveSec=3day
+AccuracySec=1d
+Persistent=true
+Unit=dbbackup-archive.service
+
+[Install]
+WantedBy=timers.target

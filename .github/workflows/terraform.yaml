@@ -25,6 +25,6 @@ jobs:
       - name: Terraform init
         run: terraform init
       - name: Terraform plan
-        run: terraform plan -var db_password=${{ secrets.DB_PASSWORD }} -no-color
+        run: terraform plan -var db_password=${{ secrets.DB_SUPERPASSWORD }} -no-color
       - name: Terraform apply
-        run: terraform apply -var db_password=${{ secrets.DB_PASSWORD }} -auto-approve
+        run: terraform apply -var db_password=${{ secrets.DB_SUPERPASSWORD }} -auto-approve

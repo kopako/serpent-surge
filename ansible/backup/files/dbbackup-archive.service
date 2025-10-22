@@ -1,0 +1,13 @@
+[Unit]
+Description=Archive DB backups
+After=network.target
+Requires=mysql.service
+
+[Service]
+User=dbbackup
+Group=dbbackup
+ExecStart=archive_dumps
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

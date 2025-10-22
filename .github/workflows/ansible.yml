@@ -42,39 +42,33 @@ jobs:
         cat $HOME/work/serpent-surge/serpent-surge/ansible/ansible_hosts
 
     - name: Clone repo to remote server
-      # run: ansible-playbook docker_install.yaml -i ansible_hosts -u ubuntu 
       uses: dawidd6/action-ansible-playbook@v4
       with:
         directory: ansible/
         playbook: git_clone.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
-        inventory: |
-          [awshosts]
-          ${{env.EC2_ENDPOINT}}
         options: |
           --verbose
           --user ubuntu
+          --inventory ansible_hosts
     
     - name: Install docker
-      # run: ansible-playbook docker_install.yaml -i ansible_hosts -u ubuntu 
       uses: dawidd6/action-ansible-playbook@v4
       with:
         directory: ansible/
         playbook: docker_install.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
-        inventory: |
-          [awshosts]
-          ${{env.EC2_ENDPOINT}}
         options: |
           --verbose
           --user ubuntu
+          --inventory ansible_hosts
 
     - name: Prepare env file
       run: |
         cat << EOF > .env
         DB_HOST: ${{env.RDS_ENDPOINT}}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_USER: "node_user"
+        DB_USER: ${{ secrets.DB_USER }}
         DB_NAME: "serpent_surge_db"
         PUBLIC_DNS_NAME: "kopakoserpent.ddns.net"
         CERTBOT_EMAIL: "kopandima@gmail.com"
@@ -90,12 +84,34 @@ jobs:
         directory: ansible/
         playbook: copy_env.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
-        inventory: |
-          [awshosts]
-          ${{env.EC2_ENDPOINT}}
         options: |
           --user ubuntu
           --verbose
+          --inventory ansible_hosts
+    
+    - name: Create DB table
+      uses: dawidd6/action-ansible-playbook@v4
+      with:
+        directory: ansible/
+        playbook: aws_mysql_client.yaml
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        options: |
+          --user ubuntu
+          --verbose
+          --extra-vars db_superuser=${{ secrets.DB_SUPERUSER }} db_superpass=${{ secrets.DB_SUPERPASSWORD }} db_host=${{ env.RDS_ENDPOINT }} db_user=${{ secrets.DB_USER }} db_pass=${{ secrets.DB_PASSWORD }} db_name=serpent_surge_db db_table=scores
+          --inventory ansible_hosts
+      
+    - name: Create backup service
+      uses: dawidd6/action-ansible-playbook@v4
+      with:
+        directory: ansible/
+        playbook: backup.yaml
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        options: |
+          --user ubuntu
+          --verbose
+          --inventory ansible_hosts
+          --extra-vars db_user=${{ secrets.DB_USER }} db_pass=${{ secrets.DB_PASSWORD }} 
 
     - name: Ansible Docker compose up
       uses: dawidd6/action-ansible-playbook@v4
@@ -103,10 +119,7 @@ jobs:
         directory: ansible/
         playbook: docker_compose_up.yaml
         key: ${{secrets.SSH_PRIVATE_KEY}}
-        inventory: |
-          [awshosts]
-          ${{env.EC2_ENDPOINT}}
         options: |
           --user ubuntu
           --verbose
-
+          --inventory ansible_hosts

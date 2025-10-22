@@ -1,0 +1,11 @@
+- name: Mount S3 bucket for backup
+  become: yes
+  hosts: all
+  tasks:
+    - name: Download and install the MySQL repository package
+      shell: apt install -y https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.deb
+    - name: Create and mount point directory
+      shell: |
+        mkdir /backup
+        mount-s3 serpent-surge-backup /backup
+

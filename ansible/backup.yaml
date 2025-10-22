@@ -1,0 +1,5 @@
+- name: Backup service
+  become: yes
+  hosts: all
+  roles: 
+    - backup

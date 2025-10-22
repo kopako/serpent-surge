@@ -1,0 +1,43 @@
+- name: setup Mysql
+  become: yes
+  hosts: all
+  tasks:
+    - name: Installing Mysql and dependencies
+      package:
+        name:
+          - mysql-client
+          - python3-mysqldb
+          - libmysqlclient-dev
+        state: present
+        update_cache: yes
+    - name: creating mysql user
+      mysql_user:
+        login_host: "{{ db_host }}"
+        login_user: "{{ db_superuser }}"
+        login_password: "{{ db_superpass }}"
+        name: "{{ db_user }}"
+        password: "{{ db_pass }}"
+        priv: "{{ db_name }}.{{ db_table }}:ALL"
+        host: '%'
+        state: present
+    - name: creating db
+      mysql_db:
+        login_host: "{{ db_host }}"
+        login_user: "{{ db_superuser }}"
+        login_password: "{{ db_superpass }}"
+        name: "{{db_name}}"
+        state: present
+    - name: Create table
+      community.mysql.mysql_query:
+        login_host: "{{ db_host }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_pass }}"
+        login_db: "{{ db_name }}"
+        query: |
+          CREATE TABLE IF NOT EXISTS {{ db_table }} (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            difficulty INT NOT NULL,
+            score INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )

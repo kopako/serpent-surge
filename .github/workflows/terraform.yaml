@@ -2,6 +2,8 @@ name: Terraform
 
 on:
   push:
+    paths:
+      - docker/backend.Dockerfile
     branches: [ main ]
   workflow_dispatch:
       

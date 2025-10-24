@@ -99,7 +99,7 @@ jobs:
         options: |
           --user ubuntu
           --verbose
-          --extra-vars db_superuser=${{ secrets.DB_SUPERUSER }} db_superpass=${{ secrets.DB_SUPERPASSWORD }} db_host=${{ env.RDS_ENDPOINT }} db_user=${{ secrets.DB_USER }} db_pass=${{ secrets.DB_PASSWORD }} db_name=serpent_surge_db db_table=scores
+          --extra-vars db_superuser="${{ secrets.DB_SUPERUSER }} db_superpass=${{ secrets.DB_SUPERPASSWORD }} db_host=${{ env.RDS_ENDPOINT }} db_user=${{ secrets.DB_USER }} db_pass=${{ secrets.DB_PASSWORD }} db_name=serpent_surge_db db_table=scores"
           --inventory ansible_hosts
       
     - name: Create backup service

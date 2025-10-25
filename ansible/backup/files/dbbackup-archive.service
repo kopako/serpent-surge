@@ -1,7 +1,6 @@
 [Unit]
 Description=Archive DB backups
 After=network.target
-Requires=mysql.service
 
 [Service]
 User=dbbackup

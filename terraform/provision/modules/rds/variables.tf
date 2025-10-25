@@ -5,7 +5,7 @@ variable "db_password" {
 }
 
 variable "db_user" {
-  default = "node_user"
+  default = "superuser"
 }
 
 variable "db_name" {

@@ -6,5 +6,5 @@ wget https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.deb
 apt-get install -y /mount-s3.deb
 
 mkdir ${file_system_path}
-mount-s3 ${mount_target_bucket_name} ${file_system_path}
+mount-s3 --allow-other ${mount_target_bucket_name} ${file_system_path}
 

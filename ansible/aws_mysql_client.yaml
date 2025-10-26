@@ -2,7 +2,7 @@
   become: yes
   hosts: all
   tasks:
-    - name: Installing Mysql and dependencies
+    - name: Install MySQL and dependencies
       package:
         name:
           - mysql-client
@@ -10,7 +10,7 @@
           - libmysqlclient-dev
         state: present
         update_cache: yes
-    - name: creating mysql user
+    - name: Create MySQL user
       mysql_user:
         login_host: "{{ db_host }}"
         login_user: "{{ db_superuser }}"
@@ -20,7 +20,17 @@
         priv: "{{ db_name }}.{{ db_table }}:ALL"
         host: '%'
         state: present
-    - name: creating db
+    - name: Grant specific privileges for mysqldump
+      mysql_user:
+        login_host: "{{ db_host }}"
+        login_user: "{{ db_superuser }}"
+        login_password: "{{ db_superpass }}"
+        name: "{{ db_user }}"
+        host: "%"
+        password: "{{ db_password }}"
+        priv: "{{ db_name }}.*:SELECT,LOCK TABLES"
+        state: present   
+    - name: Create db
       mysql_db:
         login_host: "{{ db_host }}"
         login_user: "{{ db_superuser }}"

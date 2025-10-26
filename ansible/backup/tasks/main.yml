@@ -13,6 +13,7 @@
     comment: Scheduled DB backup service
     create_home: no
     shell: /usr/sbin/nologin
+    home: /opt/dbbackup
     system: yes
     state: present
 
@@ -25,6 +26,14 @@
   loop:
     - /opt/dbbackup
     - /var/log/dbbackup
+    - /backup
+
+- name: Install mount-s3
+  apt:
+    deb: https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.deb
+
+- name: Mount S3 bucket
+  shell: sudo -u dbbackup mount-s3 {{ mount_target_bucket_name }} {{ file_system_path }}
 
 - name: Move dbbackup.sh
   copy:
@@ -37,7 +46,6 @@
     - dbbackup.sh
     - archive_dumps.sh
     - serpent-surge-backup.sh
-
 
 - name: Create a symbolic link
   file:

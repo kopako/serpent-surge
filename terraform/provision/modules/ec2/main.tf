@@ -8,8 +8,6 @@ resource "aws_instance" "serpent_surge_app_server" {
   tags = {
     Name = var.instance_name
   }
-
-  user_data = templatefile("./modules/ec2/user_data.tfpl", { file_system_path = var.file_system_path, mount_target_bucket_name = var.mount_target_bucket_name })
 }
 
 data "aws_vpc" "default" {

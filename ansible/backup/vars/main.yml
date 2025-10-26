@@ -1,3 +1,5 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # vars file for backup
+mount_target_bucket_name: serpent-surge-backup
+file_system_path: /backup

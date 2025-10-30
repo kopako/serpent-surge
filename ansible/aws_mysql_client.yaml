@@ -27,7 +27,7 @@
         login_password: "{{ db_superpass }}"
         name: "{{ db_user }}"
         host: "%"
-        password: "{{ db_password }}"
+        password: "{{ db_pass }}"
         priv: "{{ db_name }}.*:SELECT,LOCK TABLES"
         state: present   
     - name: Create db

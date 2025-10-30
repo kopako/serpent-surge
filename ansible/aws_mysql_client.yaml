@@ -20,16 +20,6 @@
         priv: "{{ db_name }}.{{ db_table }}:ALL"
         host: '%'
         state: present
-    - name: Grant specific privileges for mysqldump
-      mysql_user:
-        login_host: "{{ db_host }}"
-        login_user: "{{ db_superuser }}"
-        login_password: "{{ db_superpass }}"
-        name: "{{ db_user }}"
-        host: "%"
-        password: "{{ db_pass }}"
-        priv: "{{ db_name }}.*:SELECT,LOCK TABLES"
-        state: present   
     - name: Create db
       mysql_db:
         login_host: "{{ db_host }}"
